@@ -69,6 +69,89 @@ Os dados são armazenados em memória utilizando **ArrayList** durante a execuç
 
 ---
 
+## Telas do Sistema
+
+Os prints abaixo foram tirados com o sistema em execução, usando os alunos de exemplo da tabela a seguir.
+
+| Matrícula | Nome | Notas | Média | Situação |
+|-----------|------|-------|-------|----------|
+| 001 | Ana Souza | 9, 8, 10 | 9,00 | Aprovado |
+| 002 | Bruno Lima | 6, 5, 7 | 6,00 | Recuperação |
+| 003 | Carla Dias | 3, 4, 2 | 3,00 | Reprovado |
+| 004 | Diego Rocha | sem notas | — | Pendente |
+
+### Tela principal
+
+Menu de navegação com um botão para cada tela do sistema.
+
+![Tela principal](docs/prints/01-tela-principal.png)
+
+### Cadastro de Alunos
+
+Cadastro de um aluno com mensagem de confirmação:
+
+![Cadastro realizado com sucesso](docs/prints/03-cadastro-sucesso.png)
+
+Tentativa de cadastrar uma matrícula que já existe. O sistema recusa e avisa o usuário:
+
+![Matrícula duplicada](docs/prints/04-cadastro-matricula-duplicada.png)
+
+Listagem dos alunos cadastrados na JTable:
+
+![Lista de alunos](docs/prints/05-cadastro-lista.png)
+
+Edição: ao selecionar uma linha da tabela, os dados vão para o formulário e podem ser alterados.
+
+![Aluno selecionado para edição](docs/prints/06-cadastro-editar-selecao.png)
+
+![Aluno atualizado com sucesso](docs/prints/07-cadastro-editar-sucesso.png)
+
+Exclusão, com confirmação antes de remover:
+
+![Confirmação de exclusão](docs/prints/08-cadastro-excluir-confirmacao.png)
+
+![Aluno excluído com sucesso](docs/prints/09-cadastro-excluir-sucesso.png)
+
+### Lançamento de Notas
+
+Tela inicial, com o aluno selecionado em uma lista, os campos das três notas e a tabela de acompanhamento. Alunos sem notas aparecem como Pendente.
+
+![Lançamento de notas: tela inicial](docs/prints/10-notas-tela-inicial.png)
+
+Validação: uma nota fora do intervalo de 0 a 10 é recusada e nada é gravado.
+
+![Nota fora do intervalo](docs/prints/11-notas-erro-fora-do-intervalo.png)
+
+Notas válidas são salvas, e a média e a situação são calculadas na hora.
+
+![Notas salvas com sucesso](docs/prints/12-notas-sucesso.png)
+
+Com todas as notas lançadas, a tabela de acompanhamento mostra a média e a situação de cada aluno:
+
+![Tabela de acompanhamento](docs/prints/13-notas-tabela-acompanhamento.png)
+
+### Consulta de Resultados
+
+Consulta individual por matrícula, com notas, média e situação. Exemplo de um aluno em recuperação:
+
+![Consulta de aluno em recuperação](docs/prints/14-consulta-recuperacao.png)
+
+Aluno sem notas lançadas: as notas aparecem como Pendente e a média não é calculada.
+
+![Consulta de aluno pendente](docs/prints/15-consulta-pendente.png)
+
+### Relatório Geral
+
+Sem nenhum aluno cadastrado, o relatório informa que não há dados:
+
+![Relatório sem alunos](docs/prints/02-relatorio-vazio.png)
+
+Com os alunos de exemplo, o relatório mostra a média geral, a menor e a maior média, a quantidade de alunos por situação e o total de alunos. O aluno pendente não entra no cálculo das médias.
+
+![Relatório geral](docs/prints/16-relatorio-geral.png)
+
+---
+
 ## Arquitetura MVC
 
 ```
@@ -91,6 +174,8 @@ src/
 └── TesteAluno.java           ← Testes de validação do Model
 ```
 
+![Estrutura do projeto no Eclipse](docs/prints/17-estrutura-projeto.png)
+
 **Model:** responsável pelos dados e regras de negócio (validação de notas, cálculo de média, classificação).
 
 **Controller:** coordena as operações entre a View e o Model (cadastro, busca, edição, exclusão, lançamento de notas e geração de relatórios).
@@ -101,7 +186,7 @@ src/
 
 ## Tecnologias Utilizadas
 
-- **Linguagem:** Java SE
+- **Linguagem:** Java SE (compila em Java 8 ou superior)
 - **Interface gráfica:** Java Swing (JFrame, JPanel, JTextField, JButton, JTable, JComboBox, JOptionPane, JTextArea)
 - **Armazenamento:** ArrayList em memória
 - **Padrão arquitetural:** MVC
@@ -130,11 +215,11 @@ src/
 
 ### Teste 1 — Cadastro e validação de matrícula duplicada
 **O que foi testado:** Cadastrar dois alunos com a mesma matrícula.
-**Resultado:** O sistema impediu o cadastro duplicado e exibiu mensagem de aviso, conforme esperado.
+**Resultado:** O sistema impediu o cadastro duplicado e exibiu mensagem de aviso, conforme esperado. (Veja o print em [Cadastro de Alunos](#cadastro-de-alunos).)
 
 ### Teste 2 — Validação de notas fora do intervalo
 **O que foi testado:** Lançar nota com valor 11 (acima do máximo permitido).
-**Resultado:** O sistema rejeitou a nota e exibiu mensagem informando que a nota deve estar entre 0 e 10.
+**Resultado:** O sistema rejeitou a nota e exibiu mensagem informando que a nota deve estar entre 0 e 10. (Veja o print em [Lançamento de Notas](#lançamento-de-notas).)
 
 ### Teste 3 — Cálculo de média e classificação
 **O que foi testado:** Lançar notas para verificar cada situação possível.
@@ -144,6 +229,20 @@ src/
 - Notas 4, 5, 5 → Média 4.67 → **REPROVADO** ✔
 - Notas 10, 10, 10 → Média 10.0 → **APROVADO** ✔
 - Notas 0, 0, 0 → Média 0.0 → **REPROVADO** ✔
+
+Esses casos são executados pela classe `TesteAluno`, que valida o Model pelo console. Saída:
+
+```
+7, 7, 7 (esperado APROVADO) -> média 7.0 | APROVADO
+5, 5, 5 (esperado RECUPERACAO) -> média 5.0 | RECUPERACAO
+4, 5, 5 (esperado REPROVADO) -> média 4.666666666666667 | REPROVADO
+10, 10, 10 (esperado APROVADO) -> média 10.0 | APROVADO
+0, 0, 0 (esperado REPROVADO) -> média 0.0 | REPROVADO
+OK nota 11: Nota deve estar entre 0 e 10
+Somente duas notas lançadas: false | média: 0.0
+```
+
+Na interface, a classificação aparece na tabela de acompanhamento (veja em [Lançamento de Notas](#lançamento-de-notas)).
 
 ### Teste 4 — Relatório com alunos sem notas
 **O que foi testado:** Gerar relatório quando há alunos cadastrados mas sem notas lançadas.
